@@ -1,2 +1,2 @@
 postgres/data/**
-grafana/**
+prometheus/prometheus_data/**
