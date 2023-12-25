@@ -1,3 +1,4 @@
 postgres/data/**
 prometheus/prometheus_data/**
 apache-maven-3.9.6/**
+logs/target/**
