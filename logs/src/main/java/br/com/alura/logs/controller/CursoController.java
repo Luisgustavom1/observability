@@ -37,27 +37,16 @@ public class CursoController {
 	
 	@PostMapping
 	 public ResponseEntity<Object> saveCurso(@RequestBody @Valid CursoDto cursoDto){
-		
-		logger.info("Iniciando processo de inserção de registro de novo curso...");
-		logger.info("Chamando o cursoService para validar se numero de matricula já existe");
-		
 		try {
 			if(cursoService.existsByNumeroMatricula(cursoDto.getNumeroMatricula())) {
-			    logger.warn("Novo registro não inserido, o número de matricula já existe!");
+			    logger.warn("Novo registro nao inserido, o numero de matricula ja existe");
 			    return ResponseEntity.status(HttpStatus.CONFLICT).body("O número de matricula do curso já esta em uso!");
 		    }
 			
-		    logger.info("Validação de número de matricula concluida...");
-		    logger.info("Chamando o cursoService para validar se numero do curso já existe");
-		
 		    if(cursoService.existsByNumeroCurso(cursoDto.getNumeroCurso())) {
-			    logger.warn("Novo registro não inserido, o número do curso já existe!");
+			    logger.warn("Novo registro nao inserido, o numero do curso ja existe");
 			    return ResponseEntity.status(HttpStatus.CONFLICT).body("O número do curso já esta em uso!");
 		    }
-		    
-		    logger.info("Validação de número de curso concluida...");
-		    logger.info("Validações de cursoService sobre cursoDto executadas com sucesso!");
-		    logger.info("Chamando cursoService.save para armazenar novo registro...");
 		
 		    var cursoModel = new CursoModel();
 		    BeanUtils.copyProperties(cursoDto, cursoModel);
@@ -65,7 +54,7 @@ public class CursoController {
 		    logger.info("Novo registro de curso salvo com sucesso!");
 		    return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(cursoModel));
 	    } catch (DataAccessResourceFailureException e) {
-			logger.error("Erro de comumicação com o database");
+			logger.error("Erro de comumicacao com o database");
 			throw new InternalErrorException("Erro momentaneo, por favor tente mais tarde...");
 		}
 	}
@@ -74,7 +63,6 @@ public class CursoController {
 	@GetMapping
 	public ResponseEntity<Page<CursoModel>> getAllCursos(@PageableDefault(page = 0, size = 10, sort = "dataInscricao", direction = Sort.Direction.ASC) Pageable pageable) {
 		try {
-			logger.info("Chamando cursoService para buscar todos os registros");
 		    return ResponseEntity.status(HttpStatus.OK).body(cursoService.findAll(pageable));
 		} catch (CannotCreateTransactionException e) {
 			logger.error("Erro de comumicação com o database");
@@ -131,26 +119,21 @@ public class CursoController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateCursos(@PathVariable(value = "id") UUID id, @RequestBody @Valid CursoDto cursoDto) {
     	
-    	logger.info("Chamando cursoService para atualizar um registro por UUID");
-    	
     	try {
     	    Optional<CursoModel> cursoModelOptional = cursoService.findById(id);
-    	    logger.info("Validando por cursoService se o UUID existe");
-    	    
     	    if (!cursoModelOptional.isPresent()) {
-    		    logger.warn("Validação em cursoService não encontrou o registro procurado!");
+    		    		logger.warn("Validacao em cursoService nao encontrou o registro procurado");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado!");
             }
     	
-    	    logger.info("Validação de cursoService sobre cursoDto executada com sucesso!");
             var cursoModel = new CursoModel();
             BeanUtils.copyProperties(cursoDto, cursoModel);
             cursoModel.setId(cursoModelOptional.get().getId());
             cursoModel.setDataInscricao(cursoModelOptional.get().getDataInscricao());
-            logger.info("O registro foi atualizado por cursoService no database com sucesso!");
+            logger.info("O registro foi atualizado por cursoService no database com sucesso");
             return ResponseEntity.status(HttpStatus.OK).body(cursoService.save(cursoModel));
         }  catch (CannotCreateTransactionException e) {
-			logger.error("Erro de comumicação com o database");
+			logger.error("Erro de comumicacao com o database");
 			throw new InternalErrorException("Erro momentaneo, por favor tente mais tarde...");
 		}
 	}
