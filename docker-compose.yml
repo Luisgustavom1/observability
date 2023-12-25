@@ -3,6 +3,7 @@ version: '3.8'
 networks:
   database:
   monit:
+  api:
   
 services:
   database:
@@ -68,4 +69,14 @@ services:
     ports:
         - 3100:3100
     networks:
-        - monit
+      - monit
+  
+  client-api-cursos:
+    build:
+      context: ./client/
+      dockerfile: Dockerfile
+    image: client-api-cursos
+    container_name: client-api-cursos
+    restart: unless-stopped
+    networks:
+      - api
