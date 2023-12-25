@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST='host.docker.internal:8080'
+HOST='api-cursos:8080'
 
 while true
     do
